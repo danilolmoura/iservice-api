@@ -3,7 +3,6 @@ import os
 from . import Config
 
 class ConfigProd(Config):
-    DEVELOPMENT = False
     DEBUG = False
     FLASK_ENV = 'production'
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{}:{}@{}/{}'.format(
