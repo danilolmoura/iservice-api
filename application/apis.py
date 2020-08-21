@@ -20,6 +20,7 @@ class StoreResource(ModelResource):
         name = 'store'
 
     class Schema:
+        partner = fields.ToOne('partner')
         location = fields.Custom(
             {},
             converter=Store.location_from_json,

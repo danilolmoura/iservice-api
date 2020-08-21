@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from geoalchemy2 import Geometry
+from geoalchemy2.shape import from_shape, to_shape
+from shapely.geometry import Point, Polygon, MultiPolygon
 
 db = SQLAlchemy()
 
@@ -75,19 +77,32 @@ class Store(db.Model):
 
     @staticmethod
     def location_from_json(data):
-        return True
+        wkb_element = from_shape(Point(data['lat'], data['long']))
+
+        return wkb_element
 
     @staticmethod
     def location_to_json(data):
-        return True
+        point = to_shape(data)
+
+        return {
+            'lat': point.x,
+            'lng': point.y
+        }
 
     @staticmethod
     def coverage_area_from_json(data):
-        return True
+        polygons = [Polygon(polygon) for polygon in data]
+
+        wkb_element = from_shape(MultiPolygon(polygons))
+
+        return wkb_element
 
     @staticmethod
     def coverage_area_to_json(data):
-        return True
+        multipolygon = to_shape(data)
+
+        return [polygon.exterior.coords[:-1] for polygon in multipolygon]
 
     def to_json(self):
         pass
