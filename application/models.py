@@ -12,10 +12,11 @@ class Partner(db.Model):
         primary_key=True,
         doc='id do parceiro')
 
-    name = db.Column(
+    document = db.Column(
         db.String(128),
         nullable=False,
-        doc='nome do parceiro')
+        unique=True,
+        doc='cpf ou cnpj')
 
     email = db.Column(
         db.String(128),
@@ -23,20 +24,18 @@ class Partner(db.Model):
         unique=True,
         doc='email')
 
-    document = db.Column(
+    name = db.Column(
         db.String(128),
         nullable=False,
-        unique=True,
-        doc='cpf ou cnpj')
+        doc='nome do parceiro')
 
-    store_id = db.Column(
-        db.Integer,
-        db.ForeignKey('store.id'),
-        nullable=False,
-        unique=True,
-        doc='id da loja')
+    store = db.relationship(
+        'Store',
+        back_populates="partner",
+        primaryjoin="Store.partner_id==Partner.id")
 
-    store = db.relationship('Store')
+    def to_json(self):
+        pass
 
 
 class Store(db.Model):
@@ -65,11 +64,33 @@ class Store(db.Model):
         index=True,
         doc='Area de cobertura da loja')
 
-    owner = db.relationship(
-        'Partner',
-        back_populates="store",
-        primaryjoin="Partner.store_id==Store.id")
+    partner_id = db.Column(
+        db.Integer,
+        db.ForeignKey('partner.id'),
+        nullable=False,
+        unique=True,
+        doc='id da parceiro')
 
+    partner = db.relationship('Partner')
+
+    @staticmethod
+    def location_from_json(data):
+        return True
+
+    @staticmethod
+    def location_to_json(data):
+        return True
+
+    @staticmethod
+    def coverage_area_from_json(data):
+        return True
+
+    @staticmethod
+    def coverage_area_to_json(data):
+        return True
+
+    def to_json(self):
+        pass
 
 class Product(db.Model):
     """Define schema for product table
@@ -94,3 +115,6 @@ class Product(db.Model):
         db.Integer,
         nullable=False,
         doc='categoria do produto')
+
+    def to_json(self):
+        pass
