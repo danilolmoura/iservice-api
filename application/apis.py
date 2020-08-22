@@ -2,8 +2,6 @@ import pdb
 
 from flask_potion import fields, ModelResource
 from flask_potion.routes import Route
-from geoalchemy2.shape import from_shape, to_shape
-from shapely.geometry import Point
 
 from application.models import Partner, Product, Store
 
