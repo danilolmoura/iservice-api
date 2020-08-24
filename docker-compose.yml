@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  db:
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER_API}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_API}
+      POSTGRES_DB: ${POSTGRES_DB_API_DEV}
+      POSTGRES_SERVER: ${POSTGRES_SERVER_API}
+    container_name: iservice-db
+    image: postgres:latest
+    networks:
+      - default
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+  api:
+    build:
+      context: .
+    container_name: iservice-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./application:/application
+      - ./alembic:/alembic
+    depends_on:
+      - db
+    env_file: .env
+    networks:
+      - default
+    restart: always
