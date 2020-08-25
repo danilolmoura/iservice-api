@@ -1,5 +1,7 @@
 FROM ubuntu:18.04
 
+ENV DEBIAN_FRONTEND=nonintercative
+
 RUN apt update -y && \
     apt install -y python-pip python-dev
 
@@ -11,7 +13,8 @@ COPY ./requirements.txt iservice-api/requirements.txt
 RUN \
  apk add --no-cache postgresql-libs && \
  apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev && \
- python3 -m pip install -r /iservice-api/requirements.txt --no-cache-dir && \
+ apk add geos-dev && \
+ python -m pip install -r /iservice-api/requirements.txt --no-cache-dir && \
  apk --purge del .build-deps
 
 COPY . iservice-api/

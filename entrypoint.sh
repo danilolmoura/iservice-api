@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # Apply migrations in dev database
 alembic upgrade head
 
@@ -8,7 +10,8 @@ alembic upgrade head
 # alembic upgrade head
 # cp alembic_test.ini alembic.ini
 
-run tests
+sleep 5
+# run tests
 pytest tests/
 
 # start application

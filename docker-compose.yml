@@ -3,12 +3,11 @@ version: '3'
 services:
   db:
     environment:
-      POSTGRES_USER: ${POSTGRES_USER_API}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_API}
-      POSTGRES_DB: ${POSTGRES_DB_API_DEV}
-      POSTGRES_SERVER: ${POSTGRES_SERVER_API}
+      POSTGRES_USER: ${POSTGRES_ISERVICE_DEV_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_ISERVICE_DEV_PASS}
+      POSTGRES_DB: ${POSTGRES_ISERVICE_DEV_DB}
     container_name: iservice-db
-    image: postgres:latest
+    image: mdillon/postgis
     networks:
       - default
     ports:
