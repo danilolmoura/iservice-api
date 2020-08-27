@@ -49,10 +49,11 @@ class Store(db.Model):
         primary_key=True,
         doc='id da loja')
 
-    name = db.Column(
-        db.String(128),
+    coverage_area = db.Column(
+        Geometry(geometry_type='MULTIPOLYGON'),
         nullable=False,
-        doc='nome da loja')
+        index=True,
+        doc='Area de cobertura da loja')
 
     location = db.Column(
         Geometry(geometry_type='POINT'),
@@ -60,11 +61,10 @@ class Store(db.Model):
         index=True,
         doc='Localização da loja')
 
-    coverage_area = db.Column(
-        Geometry(geometry_type='MULTIPOLYGON'),
+    name = db.Column(
+        db.String(128),
         nullable=False,
-        index=True,
-        doc='Area de cobertura da loja')
+        doc='nome da loja')
 
     partner_id = db.Column(
         db.Integer,
@@ -74,6 +74,11 @@ class Store(db.Model):
         doc='id da parceiro')
 
     partner = db.relationship('Partner')
+
+    products = db.relationship(
+        'Product',
+        back_populates="store",
+        primaryjoin="Product.store_id==Store.id")
 
     @staticmethod
     def location_from_json(data):
@@ -107,6 +112,7 @@ class Store(db.Model):
     def to_json(self):
         pass
 
+
 class Product(db.Model):
     """Define schema for product table
     """
@@ -116,20 +122,29 @@ class Product(db.Model):
         primary_key=True,
         doc='id da loja')
 
-    name = db.Column(
-        db.String(128),
+    category = db.Column(
+        db.Integer,
         nullable=False,
-        doc='nome da loja')
+        doc='categoria do produto')
 
     description = db.Column(
         db.String(512),
         nullable=False,
         doc='descrição do produto')
 
-    category = db.Column(
-        db.Integer,
+    name = db.Column(
+        db.String(128),
         nullable=False,
-        doc='categoria do produto')
+        doc='nome da loja')
+
+    store_id = db.Column(
+        db.Integer,
+        db.ForeignKey('store.id'),
+        nullable=False,
+        unique=True,
+        doc='id da loja')
+
+    store = db.relationship('Store')
 
     def to_json(self):
         pass
