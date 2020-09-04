@@ -29,5 +29,5 @@ def test_client(app):
 def teardown(session):
     session.execute('DELETE FROM product')
     session.execute('DELETE FROM store')
-    session.execute('DELETE FROM partner')
+    session.execute('DELETE FROM "user"')
     session.commit()

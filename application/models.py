@@ -5,8 +5,8 @@ from shapely.geometry import Point, Polygon, MultiPolygon
 
 db = SQLAlchemy()
 
-class Partner(db.Model):
-    """Define schema for partner table
+class User(db.Model):
+    """Define schema for user table
     """
 
     id = db.Column(
@@ -33,8 +33,8 @@ class Partner(db.Model):
 
     store = db.relationship(
         'Store',
-        back_populates="partner",
-        primaryjoin="Store.partner_id==Partner.id")
+        back_populates="user",
+        primaryjoin="Store.user_id==User.id")
 
     def to_json(self):
         pass
@@ -66,14 +66,14 @@ class Store(db.Model):
         nullable=False,
         doc='nome da loja')
 
-    partner_id = db.Column(
+    user_id = db.Column(
         db.Integer,
-        db.ForeignKey('partner.id'),
+        db.ForeignKey('user.id'),
         nullable=False,
         unique=True,
         doc='id da parceiro')
 
-    partner = db.relationship('Partner')
+    user = db.relationship('User')
 
     products = db.relationship(
         'Product',

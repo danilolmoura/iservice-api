@@ -3,13 +3,13 @@ import pdb
 from flask_potion import fields, ModelResource
 from flask_potion.routes import Route
 
-from application.models import Partner, Product, Store
+from application.models import User, Product, Store
 
-class PartnerResource(ModelResource):
+class UserResource(ModelResource):
     class Meta:
         include_id = True
-        model = Partner
-        name = 'partner'
+        model = User
+        name = 'user'
 
 class StoreResource(ModelResource):
     class Meta:
@@ -18,7 +18,7 @@ class StoreResource(ModelResource):
         name = 'store'
 
     class Schema:
-        partner = fields.ToOne('partner')
+        user = fields.ToOne('user')
         location = fields.Custom(
             {},
             converter=Store.location_from_json,
@@ -37,6 +37,6 @@ class ProductResource(ModelResource):
         name = 'product'
 
 def create_apis(api):
-    api.add_resource(PartnerResource)
+    api.add_resource(UserResource)
     api.add_resource(StoreResource)
     api.add_resource(ProductResource)
