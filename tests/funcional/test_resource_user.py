@@ -14,7 +14,8 @@ class TestUserResource():
             data = {
                 'document': '00.000.000/0000-00',
                 'email': 'danilolmoura@gmail.com',
-                'name': 'Danilo da Silva'
+                'name': 'Danilo da Silva',
+                'password': '12345'
             }
 
             res = test_client.post(
@@ -33,7 +34,8 @@ class TestUserResource():
             data = {
                 'document': '00.000.000/0000-01',
                 'email': 'danilolmoura2@gmail.com',
-                'name': 'Danilo da Silva'
+                'name': 'Danilo da Silva',
+                'password': '12345'
             }
 
             res = test_client.post(
@@ -58,7 +60,8 @@ class TestUserResource():
             data = {
                 'document': '00.000.000/00002',
                 'email': 'danilolmoura3@gmail.com',
-                'name': 'Danilo da Silva'
+                'name': 'Danilo da Silva',
+                'password': '12345'
             }
 
             res = test_client.post(
@@ -88,7 +91,8 @@ class TestUserResource():
             data = {
                 'document': '00.000.000/0000-10',
                 'email': 'danilolmoura10@gmail.com',
-                'name': 'Danilo da Silva'
+                'name': 'Danilo da Silva',
+                'password': '12345'
             }
 
             # Create a user
@@ -107,10 +111,11 @@ class TestUserResource():
 
             user_res = json.loads(res.data)
 
-            assert len(user_res.keys()) == 4
+            assert len(user_res.keys()) == 5
             assert user_res['$id'] == user_id
             assert user_res['document'] == data['document']
             assert user_res['email'] == data['email']
             assert user_res['name'] == data['name']
+            assert user_res['password'] == data['password']
 
         should_return_user_for_a_specified_id(test_client, session)

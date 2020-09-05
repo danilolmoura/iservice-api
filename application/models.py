@@ -138,10 +138,9 @@ class Product(db.Model):
         nullable=False,
         doc='descrição do produto')
 
-    import pdb
-    pdb.set_trace()
     image_urls = db.Column(
         db.ARRAY(db.String(128)),
+        nullable=False,
         doc='lista de imagens do produto')
 
     name = db.Column(
@@ -160,3 +159,12 @@ class Product(db.Model):
 
     def to_json(self):
         pass
+
+    @staticmethod
+    def image_urls_from_json(data):
+        return data
+
+    @staticmethod
+    def image_urls_to_json(data):
+        return data
+

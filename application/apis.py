@@ -11,6 +11,7 @@ class UserResource(ModelResource):
         model = User
         name = 'user'
 
+
 class StoreResource(ModelResource):
     class Meta:
         include_id = True
@@ -35,6 +36,14 @@ class ProductResource(ModelResource):
         include_id = True
         model = Product
         name = 'product'
+
+    class Schema:
+        store = fields.ToOne('store')
+        image_urls = fields.Custom(
+            {},
+            converter=Product.image_urls_from_json,
+            formatter=Product.image_urls_to_json)
+
 
 def create_apis(api):
     api.add_resource(UserResource)
