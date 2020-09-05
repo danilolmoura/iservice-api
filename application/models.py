@@ -26,6 +26,12 @@ class User(db.Model):
         unique=True,
         doc='email')
 
+    password = db.Column(
+        db.String(24),
+        nullable=False,
+        unique=False,
+        doc='password')
+
     name = db.Column(
         db.String(128),
         nullable=False,
@@ -131,6 +137,12 @@ class Product(db.Model):
         db.String(512),
         nullable=False,
         doc='descrição do produto')
+
+    import pdb
+    pdb.set_trace()
+    image_urls = db.Column(
+        db.ARRAY(db.String(128)),
+        doc='lista de imagens do produto')
 
     name = db.Column(
         db.String(128),
