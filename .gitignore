@@ -139,3 +139,4 @@ cython_debug/
 
 postgres-data/
 .DS_Store
+alembic_*
