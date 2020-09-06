@@ -139,9 +139,27 @@ class Product(db.Model):
         doc='descrição do produto')
 
     image_urls = db.Column(
-        db.ARRAY(db.String(128)),
+        db.ARRAY(db.String(512)),
         nullable=False,
         doc='lista de imagens do produto')
+
+    is_active = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
+        doc='está ativo')
+
+    is_for_exchange = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=True,
+        doc='disponível para troca')
+
+    is_for_sale = db.Column(
+        db.Boolean,
+        nullable=False,
+        default=False,
+        doc='disponível para venda')
 
     name = db.Column(
         db.String(128),
