@@ -7,7 +7,6 @@ from tests import utils
 class TestUserResource():
     url_user = '/api/v1/user'
     url_user_item = '/api/v1/user/{}'
-    url_nearest = '/api/v1/user/nearest'
 
     def test_create_user_endpoint(self, test_client, session, teardown):
         def should_create_a_user(test_client, session):
