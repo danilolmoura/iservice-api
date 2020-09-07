@@ -5,6 +5,7 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ['SECRET_KEY']
+    JWT_SECRET_KEY = os.environ['JWT_SECRET_KEY']
     SQLALCHEMY_TRACK_MODIFICATIONS=False
     POTION_DEFAULT_PER_PAGE = 20
     POTION_MAX_PER_PAGE = 5000
