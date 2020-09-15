@@ -6,6 +6,7 @@ Com o Iservice é possível que parceiros cadastrados divulguem seus produtos e 
 
 # Table of contents
    * [Configurando o ambiente local](#configurando-o-ambiente-local)
+   * [Documentation](#documentation)
    * [References](#references)
 
 # Configurando o ambiente local
@@ -29,6 +30,10 @@ Os logs de execução da aplicação podem ser visualizados através dos comando
 	docker ps
 	docker logs <container_id>
 
+# Documentation
+
+* [Read the docs](https://github.com/danilolmoura/iservice-api/blob/master/docs.md)
+ 
 # References
 
 * [Docker](https://www.docker.com/get-started)
