@@ -32,7 +32,7 @@ Os logs de execução da aplicação podem ser visualizados através dos comando
 
 # Documentation
 
-* [Read the docs](https://github.com/danilolmoura/iservice-api/blob/master/docs.md)
+* [Read the docs](https://github.com/danilolmoura/iservice-api/blob/master/docs/docs.md)
  
 # References
 
