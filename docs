@@ -1,0 +1,249 @@
+# API documentation
+
+## Description
+
+IService API is a `HTTP REST` interface
+
+## Headers
+
+For each request, **it is necessary** to add the `Content-Type` to the application headers as shown in the example below:
+```json
+{
+	"Content-Type": "application/json"
+}
+```
+
+## user resource
+
+### CREATE
+
+With this resoure it's possible to create a new `user`, considering the points below:
+
+- It's not necessary to add `id` at creation.
+- All fields are required, except for id
+- It's not possible to create `users` with same document or same `email`
+
+#### example
+
+```json
+POST /api/v1/user
+{
+	"email": "danilolmoura@gmail.com",
+    "name": "Danilo da Silva",
+    "document": "04.433.333/0031-44",
+	"password": "123456"
+}
+```
+
+In the response, the data of the newly created will be returned:
+```json
+HTTP Response 200
+{
+  "$id": 1,
+  "document": "04.433.333/0031-44",
+  "email": "danilolmoura@gmail.com",
+  "name": "Danilo da Silva",
+  "password": "123456"
+}
+```
+
+Or, it will return an exception if the `document` or `email` is duplicated:
+```json
+HTTP Response 409
+{
+  "message": "Conflict",
+  "status": 409
+}
+```
+
+### GET
+
+With this resoure it's possible to get user info
+
+#### example
+
+```json
+GET /api/v1/user/<user_id>
+```
+
+In the response, the data of the user returned:
+```json
+HTTP Response 200
+{
+  "$id": 1,
+  "document": "04.433.333/0031-44",
+  "email": "danilolmoura@gmail.com",
+  "name": "Danilo da Silva",
+  "password": "123456"
+}
+```
+
+Or, it will return an exception if the `document` or `email` is duplicated:
+```json
+HTTP Response 404
+{
+  "item": {
+    "$id": 2,
+    "$type": "user"
+  },
+  "message": "Not Found",
+  "status": 404
+}
+```
+
+### LIST
+
+With this resoure it's possible to list users info
+
+#### example
+
+```json
+GET /api/v1/user
+```
+
+```json
+HTTP Response 200
+[
+  {
+    "$id": 1,
+    "document": "04.433.714/0031-44",
+    "email": "danilolmoura@gmail.com",
+    "name": "Danilo da Silva",
+    "password": "123456"
+  },
+  {
+    "$id": 2,
+    "document": "04.433.333/0031-44",
+    "email": "danilolmoura2@gmail.com",
+    "name": "Danilo Moura",
+    "password": "123456"
+  }
+]
+```
+
+Or, it will return an empty list if there are no users registered:
+```json HTTP Response 200
+[]
+```
+
+## Carregar parceiro pelo id (CPPI)
+
+Através desse recurso, é possível buscar informações de um parceiro já cadastrado utilizando deu `id`, considerando os pontos abaixo:
+
+- É necessário adicionar à URL da requição um `id` de parceiro já existente, caso contrário uma exceção será lançada.
+
+### Exemplo CPPI
+
+```json
+HTTP GET /api/v1/user/1
+```
+
+Na resposta, serão retornados os dados do parceiro solicitado:
+```json
+HTTP Response 200
+{
+	"$id": 1,
+	"address": {
+		"coordinates": [-46.57421, -21.785741],
+		"type": "Point"
+	},
+	"coverageArea": {
+		"coordinates": [
+			[
+				[
+					[-43.36556, -22.99669],
+					[-43.36539, -23.01928],
+					[-43.26583, -23.01802],
+					[-43.25724, -23.00649],
+					[-43.23355, -23.00127]
+				],
+				[
+					[15.0, 5.0],
+					[40.0, 10.0],
+					[10.0, 20.0],
+					[5.0, 10.0]
+				]
+			]
+		],
+		"type": "MultiPolygon"
+	},
+	"document": "1432132123891/0001",
+	"ownerName": "Zé da Silva",
+	"tradingName": "Adega da Cerveja - Pinheiros"
+}
+```
+
+Ou, retornará uma exceção caso o `id` seja inválido, no seguinte formato:
+```json
+HTTP Response 404
+{
+	"item": {
+		"$id": 278,
+		"$type": "user"
+	},
+	"message": "Not Found",
+	"status": 404
+}
+```
+
+## Buscar parceiro (BP)
+
+Através desse recurso, é possível encontrar o parceiro mais próximo e cuja área de cobertura abranje a coordenada enviada, considerando os pontos abaixo:
+
+- É necessário o envio da coordenada geográfica (long, lat), onde queremos buscar o parceiro.
+- Uma vez recebedida as coordenada geográfica, é localizado o parceiro cuja área de cobertura engloba a coordenada enviada na requisição.
+- Caso mais de um parceiro seja encontrado no item anterior, é escolhido o parceiro cujo endereço é o mais próximo da coordenada enviada na requisição.
+- Caso nenhum parceiro possua área de cobertura que englobe o ponto enviado, o resultado será vazio.
+
+### Exemplo BP
+
+```json
+HTTP GET /api/v1/user/nearest
+{
+	"long": -43.311675,
+	"lat": -23.010202
+}
+```
+
+Na resposta, serão retornados os dados do parceiro mais próximo:
+```json
+HTTP Response 200
+{
+	"$id": 1,
+	"address": {
+	    "coordinates": [-43.297337, -23.013538],
+	    "type": "Point"
+	},
+	"coverageArea": {
+	    "coordinates": [
+	        [
+	            [
+	                [-43.36556, -22.99669],
+	                [-43.36539, -23.01928],
+	                [-43.26583, -23.01802],
+	                [-43.25724, -23.00649],
+	                [-43.23355, -23.00127]
+	            ]
+	        ]
+	    ],
+	    "type": "MultiPolygon"
+	},
+  	"document": "1432132123891/0001",
+	"ownerName": "Joao Silva",
+	"tradingName": "Bar do Ze"
+}
+```
+
+Ou, na resposta será retornado `null` caso nenhum parceiro cubra o ponto geográfico enviado:
+```json
+HTTP Response 200
+
+null
+```
+
+# References
+
+* [Docker](https://www.docker.com/get-started)
+* [Flask](http://flask.palletsprojects.com/en/1.1.x/)
+* [SQLAlchemy](https://www.sqlalchemy.org/)
+* [GeoAlchemy2](https://geoalchemy-2.readthedocs.io/en/latest/)
