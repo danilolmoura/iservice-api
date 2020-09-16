@@ -88,7 +88,7 @@ class Store(db.Model):
 
     @staticmethod
     def location_from_json(data):
-        wkb_element = from_shape(Point(data['lat'], data['long']))
+        wkb_element = from_shape(Point(data['lat'], data['lng']))
 
         return wkb_element
 
@@ -176,7 +176,17 @@ class Product(db.Model):
     store = db.relationship('Store')
 
     def to_json(self):
-        pass
+        return {
+            'id': self.id,
+            'category': self.category,
+            'description': self.description,
+            'image_urls': self.image_urls,
+            'is_active': self.is_active,
+            'is_for_exchange': self.is_for_exchange,
+            'is_for_sale': self.is_for_sale,
+            'name': self.name,
+            'store_id': self.store_id,
+        }
 
     @staticmethod
     def image_urls_from_json(data):
