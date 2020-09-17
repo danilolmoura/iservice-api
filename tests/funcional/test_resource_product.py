@@ -6,7 +6,6 @@ from tests import utils
 
 class TestProductResource():
     url_product = '/api/v1/product'
-    url_store = '/api/v1/store'
     url_product_item = '/api/v1/product/{}'
     url_change_status = '/api/v1/product/{}/status'
     url_request_exchange = '/api/v1/product/{}/exchange'
@@ -75,7 +74,6 @@ class TestProductResource():
         def should_return_product_for_a_specified_id(test_client, session):
             user = utils.create_user(
                 session,
-                User,
                 **{
                     'document': '00.000.000/0000-00',
                     'email': 'danilolmoura@gmail.com',
@@ -85,28 +83,22 @@ class TestProductResource():
             )
 
             store_data = {
-                "name": "Loja do Danilo",
-                "coverage_area": [
+                'name': 'Loja do Danilo',
+                'coverage_area': Store.coverage_area_from_json([
                         [
                             [-22.885576, -43.276030],
                             [-22.904009, -43.297860],
                             [-22.910643, -43.271918]
                         ]
-                    ],
-                    "location": {
-                            "lat": -22.894507,
-                            "lng": -43.260745
-                    },
-                    "user": user.id
+                    ]),
+                    'location': Store.location_from_json({
+                            'lat': -22.894507,
+                            'lng': -43.260745
+                    }),
+                    'user_id': user.id
             }
 
-            res = test_client.post(
-                self.url_store,
-                data=json.dumps(store_data),
-                headers=utils.get_headers())
-
-            assert res.status_code == 200
-            store = json.loads(res.data)
+            store = utils.create_store(session, **store_data)
 
             data_product = {
                 'category': 1,
@@ -116,27 +108,78 @@ class TestProductResource():
                 'is_for_exchange': True,
                 'is_for_sale': False,
                 'name': 'Bola de vôlei',
-                'store': store.get('$id'),
+                'store_id': store.id,
             }
 
-            res = test_client.post(
-                self.url_product,
+            product = utils.create_product(session, **data_product)
+
+            res = test_client.get(
+                self.url_product_item.format(product.id),
                 data=json.dumps(data_product),
                 headers=utils.get_headers())
 
             assert res.status_code == 200
 
-            product_json = json.loads(res.data)
-            assert data_product['category'] == product_json['category']
-            assert data_product['description'] == product_json['description']
-            assert data_product['image_urls'] == product_json['image_urls']
-            assert data_product['is_active'] == product_json['is_active']
-            assert data_product['is_for_exchange'] == product_json['is_for_exchange']
-            assert data_product['is_for_sale'] == product_json['is_for_sale']
-            assert data_product['name'] == product_json['name']
-
         def should_return_only_specific_product_fields(test_client, session):
-            pass
+            user = utils.create_user(
+                session,
+                **{
+                    'document': '00.000.000/0000-01',
+                    'email': 'danilolmoura@gmail2.com',
+                    'name': 'Danilo da Silva',
+                    'password': '12345'
+                }
+            )
+
+            store_data = {
+                'name': 'Loja do Danilo',
+                'coverage_area': Store.coverage_area_from_json([
+                        [
+                            [-22.885576, -43.276030],
+                            [-22.904009, -43.297860],
+                            [-22.910643, -43.271918]
+                        ]
+                    ]),
+                    'location': Store.location_from_json({
+                            'lat': -22.894507,
+                            'lng': -43.260745
+                    }),
+                    'user_id': user.id
+            }
+
+            store = utils.create_store(session, **store_data)
+
+            data_product = {
+                'category': 1,
+                'description': 'Bola de vôlei 2 anos de uso',
+                'image_urls': ['https://cdn.ecvol.com/s/www.querocase.com.br/produtos/topsocket-bola-de-volei/z/0.png'],
+                'is_active': True,
+                'is_for_exchange': True,
+                'is_for_sale': False,
+                'name': 'Bola de vôlei',
+                'store_id': store.id,
+            }
+
+            product = utils.create_product(session, **data_product)
+
+            res = test_client.get(
+                self.url_product_item.format(product.id),
+                data=json.dumps(data_product),
+                headers=utils.get_headers())
+
+            assert res.status_code == 200
+            product_json = json.loads(res.data)
+
+            assert len(product_json.keys()) == 9
+            assert '$id' in product_json
+            assert 'category' in product_json
+            assert 'description' in product_json
+            assert 'image_urls' in product_json
+            assert 'is_active' in product_json
+            assert 'is_for_exchange' in product_json
+            assert 'is_for_sale' in product_json
+            assert 'name' in product_json
+            assert 'store' in product_json
 
         should_return_product_for_a_specified_id(test_client, session)
         should_return_only_specific_product_fields(test_client, session)
